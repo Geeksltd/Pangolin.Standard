@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>Pangolin.Standard</PackageId>
+    <Title>Pangolin.Standard</Title>
+    <Authors>Geeks Ltd</Authors>
+    <PackageProjectUrl>https://github.com/Geeksltd/Pangolin.Standard</PackageProjectUrl>
+    <PackageIconUrl>http://pangolin.geeksltd.co.uk/pangolin.png</PackageIconUrl>
+    <Copyright>Copyright ©2020 Geeks Ltd - All rights reserved.</Copyright>
+    <description>A framework for declarative UI testing for ASP.NET apps.</description>
+    
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <!-- Published selenium drivers to output folder on build-->
+    <PublishChromeDriver>true</PublishChromeDriver> 
+    <PublishIEDriver>true</PublishIEDriver>
+    <PublishGeckoDriver>true</PublishGeckoDriver>
+    <Version>1.0.0-alpha</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AngleSharp" Version="0.14.0" />
+    <PackageReference Include="AngleSharp.XPath" Version="1.1.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
+
+    <PackageReference Include="Selenium.Support" Version="3.141.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="83.0.4103.3900" />
+    <PackageReference Include="Selenium.WebDriver.GeckoDriver" Version="0.26.0.1" />
+    <PackageReference Include="Selenium.WebDriver.IEDriver" Version="3.150.1" />
+    <PackageReference Include="QuickIO.NET" Version="2.6.2" />
+
+  </ItemGroup>
+
+</Project>
