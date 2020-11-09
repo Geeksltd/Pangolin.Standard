@@ -13,6 +13,8 @@ namespace Geeks.Pangolin.Core.Helper
         public bool Headless { get; set; } = !Debugger.IsAttached;
         public Browser Browser { get; set; } = Browser.Chrome;
         public int MaxRetries { get; set; } = 5;
+        public bool DisposeDriverService { get; set; } = false;
+        public bool CloseBrowser { get; set; } = false;
 
         private static UISetting instance = null;
         public static UISetting Instance
@@ -50,6 +52,8 @@ namespace Geeks.Pangolin.Core.Helper
             this.Browser = ConfigHelper.Instance.Get($"{ConfigHelper.AppSettingsSection}:Browser", Browser.Chrome);
             this.Headless = ConfigHelper.Instance.Get($"{ConfigHelper.AppSettingsSection}:Headless", !Debugger.IsAttached);
             this.MaxRetries = ConfigHelper.Instance.Get($"{ConfigHelper.AppSettingsSection}:MaxRetries", 5);
+            this.DisposeDriverService = ConfigHelper.Instance.Get($"{ConfigHelper.AppSettingsSection}:DisposeDriverService ", false);
+            this.CloseBrowser = ConfigHelper.Instance.Get($"{ConfigHelper.AppSettingsSection}:CloseBrowser", false);
         }
 
         #endregion

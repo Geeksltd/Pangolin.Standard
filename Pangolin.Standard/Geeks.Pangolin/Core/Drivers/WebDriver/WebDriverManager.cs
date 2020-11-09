@@ -5,6 +5,8 @@ using OpenQA.Selenium.Support.UI;
 using System.Diagnostics;
 using Geeks.Pangolin.Core.Parameters;
 using Geeks.Pangolin.Core.Helper;
+using System.Net.NetworkInformation;
+using System.Linq;
 
 namespace Geeks.Pangolin.Core.Drivers.WebDriver
 {
@@ -33,43 +35,61 @@ namespace Geeks.Pangolin.Core.Drivers.WebDriver
             if (IsBrowserWindowOpen(supportedBrowser.ServicePort))
                 return Drivers[supportedBrowser.ServicePort];
 
-            KillDrivers();
+            var driver = Drivers.TryGet(supportedBrowser.ServicePort);
+            if (driver != null)
+            {
+                driver?.Quit();
+                Drivers.Remove(supportedBrowser.ServicePort);
+            }
 
-            var service = supportedBrowser.CreateDriverService();
-            service.Start();
-            Service = service;
+            if (!IsPortOpen(supportedBrowser.ServicePort))
+            {
+                var service = supportedBrowser.CreateDriverService();
+                service.Start();
+                Service = service;
+            }
 
-            var driver = supportedBrowser.CreateDriver();
+            driver = supportedBrowser.CreateDriver();
             Drivers.Add(supportedBrowser.ServicePort, driver);
             driver.Manage().Timeouts().AsynchronousJavaScript = 15.Seconds();
             return driver;
+
+
         }
+        private static bool IsPortOpen(int port) => IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpListeners().Any(e => e.Port == port);
 
         public void Quit()
         {
             foreach (var driver in Drivers.Values)
             {
-                try
+                if (UISetting.Instance.CloseBrowser)
                 {
-                    driver?.Close();
-                }
-                catch (System.Exception err)
-                {
-                    Debug.WriteLine(err.ToFullMessage());
+                    try
+                    {
+                        driver?.Close();
+                    }
+                    catch (System.Exception err)
+                    {
+                        Debug.WriteLine(err.ToFullMessage());
+                    }
                 }
 
-                try
+                if (UISetting.Instance.DisposeDriverService)
                 {
-                    driver?.Quit();
-                }
-                catch (System.Exception err)
-                {
-                    Debug.WriteLine(err.ToFullMessage());
+                    try
+                    {
+                        driver?.Quit();
+                        Service?.Dispose();
+                        Drivers.Clear();
+                    }
+                    catch (System.Exception err)
+                    {
+                        Debug.WriteLine(err.ToFullMessage());
+                    }
+
                 }
             }
 
-            Service?.Dispose();
-            Drivers.Clear();
         }
 
 
