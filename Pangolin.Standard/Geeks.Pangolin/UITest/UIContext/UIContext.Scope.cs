@@ -10,38 +10,38 @@ namespace Geeks.Pangolin.Helper.UIContext
     public partial class UIContext : CommandBase, ICommand
     {
         private SeleniumWebDriverService _WebDriverService;
-        public SeleniumWebDriverService WebDriverService 
-        { 
-            get=>_WebDriverService?? (_WebDriverService=SetupWebDriverService(autoDispose:true)); 
-            protected set=> _WebDriverService=value; 
+        public SeleniumWebDriverService WebDriverService
+        {
+            get => _WebDriverService ?? (_WebDriverService = SetupWebDriverService(autoDispose: true));
+            protected set => _WebDriverService = value;
         }
 
-        protected static SeleniumWebDriverService SetupWebDriverService(Browser? browser = null, string baseUrl = null, bool autoDispose=false)
+        protected static SeleniumWebDriverService SetupWebDriverService(Browser? browser = null, string baseUrl = null, bool autoDispose = false)
         {
             browser = browser == null ? UISetting.Instance.Browser : browser.Value;
             baseUrl = string.IsNullOrWhiteSpace(baseUrl) ? UISetting.Instance.AppBaseUrl : baseUrl.GetWellFormedUrl();
-            var seleniumWebDriverService = new SeleniumWebDriverService(browser, baseUrl,autoDispose);
+            var seleniumWebDriverService = new SeleniumWebDriverService(browser, baseUrl, autoDispose);
             seleniumWebDriverService.Initialize();
 
             return seleniumWebDriverService;
         }
 
         private TestRunner _TestRunner;
-        public TestRunner TestRunner 
+        public TestRunner TestRunner
         {
             get
             {
-                
-                var testMethodName = TestRunner.GetUnitTestName();
+
+                var testMethodName = TestRunner.GetUnitTestFullName();
                 var uiTest = this as UITest;
-                if (_TestRunner != null && (uiTest.TearingDownTest || _TestRunner?.CurrentTestName != testMethodName))
+                if (_TestRunner != null && (uiTest.TearingDownTest || _TestRunner?.CurrentFullTestName != testMethodName))
                 {
-                    if (!_TestRunner.Disposing)_TestRunner.Dispose();
+                    if (!_TestRunner.Disposing) _TestRunner.Dispose();
                     _TestRunner = null;
                 }
 
-                if (_TestRunner == null && !uiTest.Disposing && !uiTest.TearingDownTest) 
-                    _TestRunner = new TestRunner(uiTest, testMethodName); 
+                if (_TestRunner == null && !uiTest.Disposing && !uiTest.TearingDownTest)
+                    _TestRunner = new TestRunner(uiTest, testMethodName);
 
                 return _TestRunner;
             }
@@ -2805,7 +2805,7 @@ namespace Geeks.Pangolin.Helper.UIContext
             Target.Limiter = limiter;
             Target.SearchType = that.ToSearchType(casing);
             Target.TargetType = TargetType.IFrame;
-            return RunCommand(this, () => new WindowContext(this,Target));
+            return RunCommand(this, () => new WindowContext(this, Target));
         }
 
         public WindowContext IFrame(The the, That that, string locator = null, Casing casing = Casing.Ignore) => IFrame(the.ToLimiterType(), that, locator, casing);
