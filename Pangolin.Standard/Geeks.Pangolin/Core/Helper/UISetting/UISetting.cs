@@ -12,6 +12,7 @@ namespace Geeks.Pangolin.Core.Helper
         public string DownloadUrl { get; set; }
         public bool Headless { get; set; } = !Debugger.IsAttached;
         public Browser Browser { get; set; } = Browser.Chrome;
+        public int MaxRetries { get; set; } = 5;
 
         private static UISetting instance = null;
         public static UISetting Instance
@@ -45,13 +46,10 @@ namespace Geeks.Pangolin.Core.Helper
         private void Init()
         {
             this.AppBaseUrl = ConfigHelper.Instance.Get($"{ConfigHelper.AppSettingsSection}:AppBaseUrl").GetWellFormedUrl();
-
             this.DownloadUrl = ConfigHelper.Instance.Get($"{ConfigHelper.AppSettingsSection}:Download.Url", Path.Combine(AppConstants.ProjectPath, "Download")).AsDirectory().EnsureExists().FullName;
-
             this.Browser = ConfigHelper.Instance.Get($"{ConfigHelper.AppSettingsSection}:Browser", Browser.Chrome);
-
             this.Headless = ConfigHelper.Instance.Get($"{ConfigHelper.AppSettingsSection}:Headless", !Debugger.IsAttached);
-
+            this.MaxRetries = ConfigHelper.Instance.Get($"{ConfigHelper.AppSettingsSection}:MaxRetries", 5);
         }
 
         #endregion

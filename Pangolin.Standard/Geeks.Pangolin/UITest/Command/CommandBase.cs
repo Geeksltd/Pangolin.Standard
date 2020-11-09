@@ -8,7 +8,7 @@ namespace Geeks.Pangolin.Helper.Command
     public abstract class CommandBase
     {
         #region [Property]
-        const int ExecutedCount = 5;
+        static int MaxRetries = UISetting.Instance.MaxRetries;
 
         #endregion
 
@@ -55,7 +55,7 @@ namespace Geeks.Pangolin.Helper.Command
                         ex.GetType().Name == "NoSuchFrameException"
                         )
                     {
-                        if (executedTimes == ExecutedCount)
+                        if (executedTimes == MaxRetries)
                         {
                             Reset();
                             throw new CommandException(ex.Message);
@@ -72,7 +72,7 @@ namespace Geeks.Pangolin.Helper.Command
                     }
                     else
                     {
-                        if (executedTimes == ExecutedCount)
+                        if (executedTimes == MaxRetries)
                         {
                             uiContext.TestRunner.IsTestFailed = true;
                             Reset();
