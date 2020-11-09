@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using SchwabenCode.QuickIO;
 using OpenQA.Selenium;
 
 namespace Geeks.Pangolin.Service.Helper.ScreenshotHelper
@@ -25,7 +24,7 @@ namespace Geeks.Pangolin.Service.Helper.ScreenshotHelper
         {
             var path = GetPath(unitTestName);
             if (File.Exists(path))
-                QuickIOFile.Delete(path);
+                File.Delete(path);
         }
 
         public void Create(Screenshot screenshot, string unitTestName)
@@ -33,7 +32,7 @@ namespace Geeks.Pangolin.Service.Helper.ScreenshotHelper
             Delete(unitTestName);
             screenshot.SaveAsFile(GetPath(unitTestName));
         }
-        
+
         #endregion
 
         #region [Private Method]

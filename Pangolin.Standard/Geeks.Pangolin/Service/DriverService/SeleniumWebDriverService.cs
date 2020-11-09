@@ -15,7 +15,6 @@ using Geeks.Pangolin.Core.Helper.Targets;
 using Geeks.Pangolin.Service.Commands;
 using Geeks.Pangolin.Service.Helper.FileFinder;
 using Geeks.Pangolin.Core.Parameters;
-using SchwabenCode.QuickIO;
 using Geeks.Pangolin.Core.Drivers.WebDriver.Browsers;
 using Geeks.Pangolin.Service.Helper.Extensions;
 using System.Collections.ObjectModel;
@@ -32,7 +31,7 @@ namespace Geeks.Pangolin.Service.DriverService
 
         internal SeleniumWebDriverService(Browser? browser, string baseUrl = null, bool autoDispose = false)
         {
-            _browser = browser==null ? UISetting.Instance.Browser : browser.Value;
+            _browser = browser == null ? UISetting.Instance.Browser : browser.Value;
             baseUrl = string.IsNullOrWhiteSpace(baseUrl) ? UISetting.Instance.AppBaseUrl : baseUrl;
             if (string.IsNullOrWhiteSpace(baseUrl)) throw new ArgumentNullException(nameof(baseUrl));
             _baseUrl = baseUrl;
@@ -88,7 +87,7 @@ namespace Geeks.Pangolin.Service.DriverService
 
         #endregion
 
-        
+
         #region [Public Methods]
 
         public void SetDefaultContent()
@@ -624,7 +623,7 @@ namespace Geeks.Pangolin.Service.DriverService
                     UseJavascriptSet = false
                 },
                 Browser = Driver,
-                FileFullPathProvider =  new FileFullPathProviderDisk(AppConstants.DllPath),
+                FileFullPathProvider = new FileFullPathProviderDisk(AppConstants.DllPath),
                 BaseUrl = _baseUrl,
                 ClipboardManager = new ClipboardManager(),
             };
@@ -636,7 +635,7 @@ namespace Geeks.Pangolin.Service.DriverService
             if (Directory.Exists(path))
             {
                 foreach (var file in Directory.GetFiles(path))
-                    QuickIOFile.Delete(file);
+                    File.Delete(file);
 
                 foreach (var directory in Directory.GetDirectories(path))
                     DeleteFiles(directory);

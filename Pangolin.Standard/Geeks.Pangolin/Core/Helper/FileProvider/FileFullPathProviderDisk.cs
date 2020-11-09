@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Reflection;
-using SchwabenCode.QuickIO;
 
 namespace Geeks.Pangolin.Core.Helper.FileProvider
 {
@@ -38,8 +37,8 @@ namespace Geeks.Pangolin.Core.Helper.FileProvider
 
             var fullPath = Path.Combine(fileDirectoryPath.FullName, name);
 
-            if (QuickIOFile.Exists(fullPath))
-                QuickIOFile.Delete(fullPath);
+            if (File.Exists(fullPath))
+                File.Delete(fullPath);
 
             var resourceName = "." + "Uploadable.Files" + "." + name;
             var resourceFileName = _assembly.GetManifestResourceNames().FirstOrDefault(c => c.Contains(resourceName));
@@ -61,19 +60,19 @@ namespace Geeks.Pangolin.Core.Helper.FileProvider
             return fileDirectoryPath.GetFile(name);
         }
 
-       
+
         private void DeleteFiles(string path)
         {
             if (Directory.Exists(path))
             {
                 foreach (var file in Directory.GetFiles(path))
-                    QuickIOFile.Delete(file);
+                    File.Delete(file);
 
                 foreach (var directory in Directory.GetDirectories(path))
                     DeleteFiles(directory);
             }
         }
-        
+
         #endregion
 
     }

@@ -20,61 +20,16 @@ namespace Geeks.Pangolin.Helper.Command
 
         protected abstract void Reset();
 
-        protected void RunCommand(UIContext.UIContext uiContext, Action action)
-        {
-            var executedTimes = 1;
-            var timeout = 1;
+        protected void RunCommand(UIContext.UIContext uiContext, Action action) => RunUICommand(uiContext, new Func<object>(() => { action?.Invoke(); return null; }));
 
-            Func<bool> isCommandRun = () =>
-            {
-                try
-                {
-                    action();
-                    Reset();
-                    return true;
-                }
-                catch (System.Exception ex)
-                {
-                    if (ex is UnhandledAlertException)
-                        uiContext.WebDriverService.AcceptAnyAlert();
-                    else if (ex is OpenQA.Selenium.StaleElementReferenceException ||
-                        ex is Core.Exception.StaleElementReferenceException ||
-                        ex is NoSuchElementException ||
-                        ex is NoSuchFrameException ||
-                        ex.GetType().Name == "ElementNotVisibleException" ||
-                        ex.GetType().Name == "NoSuchFrameException"
-                    )
-                    {
-                        if (executedTimes == ExecutedCount)
-                            throw new CommandException(ex.Message);
-                        System.Threading.Thread.Sleep(timeout * 500);
-                        timeout = (timeout * 2);
-                        executedTimes++;
-                    }
-                    else if (ex is CommandException)
-                    {
-                        uiContext.TestRunner.IsTestFailed = true;
-                        throw new System.Exception(ex.Message);
-                    }
-                    else
-                    {
-                        if (executedTimes == ExecutedCount)
-                        {
-                            uiContext.TestRunner.IsTestFailed = true;
-                            throw new CommandException(ex.Message);
 
-                        }
-                        System.Threading.Thread.Sleep(timeout * 500);
-                        timeout = (timeout * 2);
-                        executedTimes++;
-                    }
-                }
-                return false;
-            };
-            isCommandRun.RepeatUntilCountNoException(10);
-        }
+        protected T RunCommand<T>(UIContext.UIContext uiContext, Func<T> func) => RunUICommand(uiContext, func);
 
-        protected T RunCommand<T>(UIContext.UIContext uiContext, Func<T> func)
+        #endregion
+
+        #region [Private Method]
+
+        private T RunUICommand<T>(UIContext.UIContext uiContext, Func<T> func)
         {
             var executedTimes = 1;
             var timeout = 1;
@@ -101,7 +56,10 @@ namespace Geeks.Pangolin.Helper.Command
                         )
                     {
                         if (executedTimes == ExecutedCount)
+                        {
+                            Reset();
                             throw new CommandException(ex.Message);
+                        }
                         System.Threading.Thread.Sleep(timeout * 500);
                         timeout = (timeout * 2);
                         executedTimes++;
@@ -109,6 +67,7 @@ namespace Geeks.Pangolin.Helper.Command
                     else if (ex is CommandException)
                     {
                         uiContext.TestRunner.IsTestFailed = true;
+                        Reset();
                         throw new System.Exception(ex.Message);
                     }
                     else
@@ -116,6 +75,7 @@ namespace Geeks.Pangolin.Helper.Command
                         if (executedTimes == ExecutedCount)
                         {
                             uiContext.TestRunner.IsTestFailed = true;
+                            Reset();
                             throw new CommandException(ex.Message);
                         }
                         System.Threading.Thread.Sleep(timeout * 500);
@@ -130,9 +90,6 @@ namespace Geeks.Pangolin.Helper.Command
             return element;
         }
 
-        #endregion
-
-        #region [Private Method]
 
         #endregion
     }
